@@ -139,11 +139,17 @@ def main():
 		ball_position_y += ball_speed_y
 
 		# Ball is bounced when the ball hit the wall
-		if ball_position_x <= ball_radius or ball_position_x >= WINDOW_WIDTH - ball_radius:
+		if ball_position_x <= ball_radius:
 			ball_speed_x = - ball_speed_x
+			ball_position_x = ball_radius
 		
+		if ball_position_x >= WINDOW_WIDTH - ball_radius:
+			ball_speed_x = - ball_speed_x
+			ball_position_x = WINDOW_WIDTH - ball_radius
+
 		if ball_position_y <= INFO_GAP + ball_radius:
 			ball_speed_y = - ball_speed_y
+			ball_position_y = INFO_GAP + ball_radius
 		
 		# Ball is bounced when the ball hit the bar
 		if ball_position_y > WINDOW_HEIGHT - bar_height - ball_radius:
@@ -160,6 +166,7 @@ def main():
 			init = True
 
 		# When the ball hit the block
+		check_ball_hit_block = 0
 		for i in range(num_block_row):
 			for j in range(num_block_col):
 				block_left  = block_info[i][j][0][0]
@@ -169,7 +176,7 @@ def main():
 				visible     = block_info[i][j][1]
 
 				# The ball hit some block!! 
-				if (block_left <= ball_position_x) and (ball_position_x <= block_right) and (block_up <= ball_position_y) and (ball_position_y <= block_down) and visible == 'visible':
+				if (block_left <= ball_position_x + ball_radius) and (ball_position_x - ball_radius <= block_right) and (block_up <= ball_position_y + ball_radius) and (ball_position_y - ball_radius <= block_down) and visible == 'visible':
 					# Which part of the block was hit?? 
 					# Upper left, Upper right, Lower right, Lower left
 					block_points = [[block_left, block_up], [block_right, block_up], [block_right, block_down], [block_left, block_down]]
@@ -214,14 +221,25 @@ def main():
 					# 0: Left, 1: Right, 2: Up, 3: Down
 					collision_line = np.argmin(dist_points)
 
-					if collision_line == 0 or collision_line == 1:
+					if collision_line == 0:
 						ball_speed_x = - ball_speed_x
-					
-					if collision_line == 2 or collision_line == 3:
+					elif collision_line == 1:
+						ball_speed_x = - ball_speed_x
+					elif collision_line == 2:
+						ball_speed_y = - ball_speed_y
+					elif collision_line == 3:
 						ball_speed_y = - ball_speed_y
 					
 					# make hit block invisible
 					block_info[i][j][1] = 'invisible'
+					check_ball_hit_block = 1
+				
+				# If one block is hitted, break the for loop (Preventing to break multiple blocks at once) 
+				if check_ball_hit_block == 1:
+					break 
+			# If one block is hitted, break the for loop (Preventing to break multiple blocks at once)
+			if check_ball_hit_block == 1:
+				break
 
 		# Fill background color
 		DISPLAYSURF.fill(BLACK)
