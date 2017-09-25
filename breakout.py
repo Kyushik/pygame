@@ -67,7 +67,7 @@ def main():
 
 	ball_radius = 5
 
-	ball_speed_x = random.randint(-4, 4)
+	ball_speed_x = random.uniform(-3, 3)
 	ball_speed_y = 5
 	ball_bounce_speed_range = 10
 
@@ -100,7 +100,7 @@ def main():
 			ball_position_x = ball_init_position_x
 			ball_position_y = ball_init_position_y
 
-			ball_speed_x = random.randint(-4, 4)
+			ball_speed_x = random.uniform(-3, 3)
 			ball_speed_y = 5
 
 			block_info = copy.deepcopy(init_block_info)
@@ -139,23 +139,25 @@ def main():
 		ball_position_y += ball_speed_y
 
 		# Ball is bounced when the ball hit the wall
-		if ball_position_x <= 0 or ball_position_x >= WINDOW_WIDTH:
+		if ball_position_x <= ball_radius or ball_position_x >= WINDOW_WIDTH - ball_radius:
 			ball_speed_x = - ball_speed_x
 		
-		if ball_position_y <= INFO_GAP:
+		if ball_position_y <= INFO_GAP + ball_radius:
 			ball_speed_y = - ball_speed_y
 		
 		# Ball is bounced when the ball hit the bar
-		if ball_position_y >= WINDOW_HEIGHT - 2:
+		if ball_position_y > WINDOW_HEIGHT - bar_height - ball_radius:
 			# Hit the ball!
 			if ball_position_x <= bar_position + bar_width and ball_position_x >= bar_position:
 				ball_hit_point = ball_position_x - bar_position
 				ball_hit_point_ratio = ball_hit_point / bar_width
 				ball_speed_x = (ball_hit_point_ratio * ball_bounce_speed_range) - (ball_bounce_speed_range/2)
 				ball_speed_y = - ball_speed_y
+				ball_position_y = WINDOW_HEIGHT - bar_height - ball_radius
+			
 			# Lose :( 
-			else:
-				init = True
+		if ball_position_y >= WINDOW_HEIGHT:
+			init = True
 
 		# When the ball hit the block
 		for i in range(num_block_row):
@@ -167,7 +169,7 @@ def main():
 				visible     = block_info[i][j][1]
 
 				# The ball hit some block!! 
-				if (block_left <= ball_position_x <= block_right) and (block_up <= ball_position_y <= block_down) and visible == 'visible':
+				if (block_left <= ball_position_x) and (ball_position_x <= block_right) and (block_up <= ball_position_y) and (ball_position_y <= block_down) and visible == 'visible':
 					# Which part of the block was hit?? 
 					# Upper left, Upper right, Lower right, Lower left
 					block_points = [[block_left, block_up], [block_right, block_up], [block_right, block_down], [block_left, block_down]]
