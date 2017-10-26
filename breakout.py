@@ -1,7 +1,7 @@
 # Q's Vehicle Simulation
 # By KyushikMin kyushikmin@gamil.com
-# http://mmc.hanyang.ac.kr 
-# Special thanks to my colleague Hayoung and Jongwon for giving ne the idea of ball and block collision algorithm 
+# http://mmc.hanyang.ac.kr
+# Special thanks to my colleague Hayoung and Jongwon for giving ne the idea of ball and block collision algorithm
 
 import random, sys, time, math, pygame
 from pygame.locals import *
@@ -9,7 +9,7 @@ import numpy as np
 import copy
 
 # Window Information
-FPS = 30 
+FPS = 30
 WINDOW_WIDTH = 480
 WINDOW_HEIGHT = 400
 
@@ -113,9 +113,9 @@ def main():
 				terminate()
 			elif event.type == KEYDOWN:
 				if (event.key == K_LEFT or event.key == K_a):
-					direction = 'LEFT' 
+					direction = 'LEFT'
 				elif (event.key == K_RIGHT or event.key == K_d):
-					direction = 'RIGHT' 
+					direction = 'RIGHT'
 				elif event.key == K_ESCAPE:
 					terminate()
 				else:
@@ -123,7 +123,7 @@ def main():
 
 		# Control the bar
 		if direction == 'LEFT':
-			bar_position -= bar_speed			
+			bar_position -= bar_speed
 		elif direction == 'RIGHT':
 			bar_position += bar_speed
 
@@ -139,18 +139,18 @@ def main():
 		ball_position_y += ball_speed_y
 
 		# Ball is bounced when the ball hit the wall
-		if ball_position_x <= ball_radius:
+		if ball_position_x < ball_radius:
 			ball_speed_x = - ball_speed_x
 			ball_position_x = ball_radius
-		
-		if ball_position_x >= WINDOW_WIDTH - ball_radius:
+
+		if ball_position_x > WINDOW_WIDTH - ball_radius:
 			ball_speed_x = - ball_speed_x
 			ball_position_x = WINDOW_WIDTH - ball_radius
 
-		if ball_position_y <= INFO_GAP + ball_radius:
+		if ball_position_y < INFO_GAP + ball_radius:
 			ball_speed_y = - ball_speed_y
 			ball_position_y = INFO_GAP + ball_radius
-		
+
 		# Ball is bounced when the ball hit the bar
 		if ball_position_y > WINDOW_HEIGHT - bar_height - ball_radius:
 			# Hit the ball!
@@ -160,8 +160,8 @@ def main():
 				ball_speed_x = (ball_hit_point_ratio * ball_bounce_speed_range) - (ball_bounce_speed_range/2)
 				ball_speed_y = - ball_speed_y
 				ball_position_y = WINDOW_HEIGHT - bar_height - ball_radius
-			
-			# Lose :( 
+
+			# Lose :(
 		if ball_position_y >= WINDOW_HEIGHT:
 			init = True
 
@@ -170,25 +170,26 @@ def main():
 		for i in range(num_block_row):
 			for j in range(num_block_col):
 				block_left  = block_info[i][j][0][0]
-				block_right = block_info[i][j][0][0] + block_info[i][j][0][2] 
+				block_right = block_info[i][j][0][0] + block_info[i][j][0][2]
 				block_up    = block_info[i][j][0][1]
 				block_down  = block_info[i][j][0][1] + block_info[i][j][0][3]
 				visible     = block_info[i][j][1]
 
-				# The ball hit some block!! 
-				if (block_left <= ball_position_x + ball_radius) and (ball_position_x - ball_radius <= block_right) and (block_up <= ball_position_y + ball_radius) and (ball_position_y - ball_radius <= block_down) and visible == 'visible':
-					# Which part of the block was hit?? 
+				# The ball hit some block!!
+				# if (block_left <= ball_position_x + ball_radius) and (ball_position_x - ball_radius <= block_right) and (block_up <= ball_position_y + ball_radius) and (ball_position_y - ball_radius <= block_down) and visible == 'visible':
+				if (block_left <= ball_position_x) and (ball_position_x <= block_right) and (block_up <= ball_position_y) and (ball_position_y <= block_down) and visible == 'visible':
+					# Which part of the block was hit??
 					# Upper left, Upper right, Lower right, Lower left
 					block_points = [[block_left, block_up], [block_right, block_up], [block_right, block_down], [block_left, block_down]]
 
 					if ball_position_x - ball_position_x_old == 0:
-						slope_ball = (ball_position_y - ball_position_y_old) / (0.1)
+						slope_ball = (ball_position_y - ball_position_y_old) / (0.01)
 					else:
 						slope_ball = (ball_position_y - ball_position_y_old) / (ball_position_x - ball_position_x_old)
 
 					# ax+by+c = 0
 					line_coeff = [slope_ball, -1, ball_position_y_old - (slope_ball * ball_position_x_old)]
-				
+
 					point1 = [block_left, (-1/line_coeff[1]) * (line_coeff[0] * block_left + line_coeff[2])]
 					point2 = [block_right, (-1/line_coeff[1]) * (line_coeff[0] * block_right + line_coeff[2])]
 					point3 = [(-1/line_coeff[0]) * (line_coeff[1] * block_up + line_coeff[2]), block_up]
@@ -200,24 +201,24 @@ def main():
 
 					for k in range(len(intersection)):
 						#intersection point is on the left side of block
-						if intersection[k][0] == block_left and (block_up <= intersection[k][1] <= block_down):
+						if (intersection[k][0] == block_left) and (block_up <= intersection[k][1] <= block_down):
 							check_intersection[0] = 1
 
-						if intersection[k][0] == block_right and (block_up <= intersection[k][1] <= block_down):
+						if (intersection[k][0] == block_right) and (block_up <= intersection[k][1] <= block_down):
 							check_intersection[1] = 1
 
-						if intersection[k][1] == block_up and (block_left <= intersection[k][0] <= block_right):
+						if (intersection[k][1] == block_up) and (block_left <= intersection[k][0] <= block_right):
 							check_intersection[2] = 1
 
-						if intersection[k][1] == block_down and (block_left <= intersection[k][0] <= block_right):
+						if (intersection[k][1] == block_down) and (block_left <= intersection[k][0] <= block_right):
 							check_intersection[3] = 1
-					
+
 					dist_points = [np.inf, np.inf, np.inf, np.inf]
 					for k in range(len(intersection)):
 						if check_intersection[k] == 1:
 							dist = get_dist(intersection[k], [ball_position_x_old, ball_position_y_old])
-							dist_points[k] = dist 
-					
+							dist_points[k] = dist
+
 					# 0: Left, 1: Right, 2: Up, 3: Down
 					collision_line = np.argmin(dist_points)
 
@@ -229,14 +230,44 @@ def main():
 						ball_speed_y = - ball_speed_y
 					elif collision_line == 3:
 						ball_speed_y = - ball_speed_y
-					
+
+					# Incorrect breaking at corner!
+					# e.g. block was hit on the right side even though there is visible block on the right
+					# Then, the former decision was wrong, so change the direction!
+					if j > 0:
+						if collision_line == 0 and block_info[i][j-1][1] == 'visible':
+							ball_speed_x = - ball_speed_x
+							ball_speed_y = - ball_speed_y
+					if j < num_block_col - 1:
+						if collision_line == 1 and block_info[i][j+1][1] == 'visible':
+							ball_speed_x = - ball_speed_x
+							ball_speed_y = - ball_speed_y
+					if i > 0:
+						if collision_line == 2 and block_info[i-1][j][1] == 'visible':
+							ball_speed_x = - ball_speed_x
+							ball_speed_y = - ball_speed_y
+					if i < num_block_row - 1:
+						if collision_line == 3 and block_info[i+1][j][1] == 'visible':
+							ball_speed_x = - ball_speed_x
+							ball_speed_y = - ball_speed_y
+
+					# Move the ball to the block boundary after ball hit the block
+					if collision_line == 0:
+						ball_position_x = block_left - ball_radius
+					elif collision_line == 1:
+						ball_position_x = block_right + ball_radius
+					elif collision_line == 2:
+						ball_position_y = block_up - ball_radius
+					elif collision_line == 3:
+						ball_position_y = block_down + ball_radius
+
 					# make hit block invisible
 					block_info[i][j][1] = 'invisible'
 					check_ball_hit_block = 1
-				
-				# If one block is hitted, break the for loop (Preventing to break multiple blocks at once) 
+
+				# If one block is hitted, break the for loop (Preventing to break multiple blocks at once)
 				if check_ball_hit_block == 1:
-					break 
+					break
 			# If one block is hitted, break the for loop (Preventing to break multiple blocks at once)
 			if check_ball_hit_block == 1:
 				break
@@ -251,10 +282,10 @@ def main():
 				if block_info[i][j][1] == 'visible':
 					pygame.draw.rect(DISPLAYSURF, block_color_list[i], block_info[i][j][0])
 					count_visible += 1
-		
-		# Win the game!! :) 
+
+		# Win the game!! :)
 		if count_visible == 0:
-			init = True	
+			init = True
 
 		# Display informations
 		score_msg(num_blocks - count_visible)
@@ -269,7 +300,7 @@ def main():
 
 		# Draw ball
 		pygame.draw.circle(DISPLAYSURF, WHITE, (int(ball_position_x), int(ball_position_y)), ball_radius, 0)
-		
+
 		# Draw line for seperate game and info
 		pygame.draw.line(DISPLAYSURF, WHITE, (0, 40), (WINDOW_WIDTH, 40), 3)
 
@@ -281,7 +312,7 @@ def terminate():
 	pygame.quit()
 	sys.exit()
 
-# Display score 
+# Display score
 def score_msg(score):
 	scoreSurf = BASIC_FONT.render('Score: ' + str(score), True, WHITE)
 	scoreRect = scoreSurf.get_rect()
@@ -301,6 +332,6 @@ def dist_line_point(coeff, point):
 
 def get_dist(point1, point2):
 	return math.sqrt(math.pow(point1[0] - point2[0],2) + math.pow(point1[1] - point2[1], 2))
-    	
+
 if __name__ == '__main__':
 	main()
