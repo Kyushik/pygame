@@ -157,7 +157,13 @@ def main():
 			if ball_position_x <= bar_position + bar_width and ball_position_x >= bar_position:
 				ball_hit_point = ball_position_x - bar_position
 				ball_hit_point_ratio = ball_hit_point / bar_width
+
 				ball_speed_x = (ball_hit_point_ratio * ball_bounce_speed_range) - (ball_bounce_speed_range/2)
+
+				# if abs(ball_hit_point_ratio - 0.5) < 0.01:
+				# 	ball_speed_x = random.uniform(-0.01 * ball_bounce_speed_range/2 , 0.01 * ball_bounce_speed_range/2)
+
+				# ball_speed_x = (ball_hit_point_ratio * ball_bounce_speed_range) - (ball_bounce_speed_range/2)
 				ball_speed_y = - ball_speed_y
 				ball_position_y = WINDOW_HEIGHT - bar_height - ball_radius
 
