@@ -64,6 +64,7 @@ def main():
 
     black_win = 0
     white_win = 0
+    count_draw = 0
 
     # black turn: 0, white turn: 1
     turn = 0
@@ -91,7 +92,7 @@ def main():
 
         # Check_win 0: playing, 1: black win, 2: white win, 3: draw
         win_index = check_win(gameboard, num_stones)
-        init, black_win, white_win = display_win(win_index, black_win, white_win)
+        init, black_win, white_win, count_draw = display_win(win_index, black_win, white_win, count_draw)
 
         # Key settings
         mouse_pos = 0
@@ -140,7 +141,7 @@ def main():
         # Display Information
         title_msg()
         rule_msg()
-        socre_msg(black_win, white_win)
+        score_msg(black_win, white_win, count_draw)
 
         # Display who's turn
         turn_msg(turn)
@@ -198,7 +199,7 @@ def rule_msg():
 	DISPLAYSURF.blit(ruleSurf1, ruleRect1)
 
 # Display scores
-def socre_msg(black_win, white_win):
+def score_msg(black_win, white_win, count_draw):
     scoreSurf1 = BASIC_FONT.render('Score: ', True, WHITE)
     scoreRect1 = scoreSurf1.get_rect()
     scoreRect1.topleft = (30, 75)
@@ -209,10 +210,15 @@ def socre_msg(black_win, white_win):
     scoreRect2.topleft = (90, 75)
     DISPLAYSURF.blit(scoreSurf2, scoreRect2)
 
-    scoreSurf3 = BASIC_FONT.render('White = ' + str(white_win), True, WHITE)
+    scoreSurf3 = BASIC_FONT.render('White = ' + str(white_win) + '  vs  ', True, WHITE)
     scoreRect3 = scoreSurf3.get_rect()
     scoreRect3.topleft = (scoreRect2.midright[0], 75)
     DISPLAYSURF.blit(scoreSurf3, scoreRect3)
+
+    scoreSurf4 = BASIC_FONT.render('Draw = ' + str(count_draw), True, WHITE)
+    scoreRect4 = scoreSurf4.get_rect()
+    scoreRect4.topleft = (scoreRect3.midright[0], 75)
+    DISPLAYSURF.blit(scoreSurf4, scoreRect4)
 
 # Display turn
 def turn_msg(turn):
@@ -289,7 +295,7 @@ def check_win(gameboard, num_stones):
                 return 2
 
 # Display Win
-def display_win(win_index, black_win, white_win):
+def display_win(win_index, black_win, white_win, count_draw):
     wait_time = 3
     # Black Win
     if win_index == 1:
@@ -305,7 +311,7 @@ def display_win(win_index, black_win, white_win):
 
         black_win += 1
 
-        return True, black_win, white_win
+        return True, black_win, white_win, count_draw
 
     # White Win
     if win_index == 2:
@@ -321,7 +327,7 @@ def display_win(win_index, black_win, white_win):
 
         white_win += 1
 
-        return True, black_win, white_win
+        return True, black_win, white_win, count_draw
 
     # Draw
     if win_index == 3:
@@ -335,9 +341,11 @@ def display_win(win_index, black_win, white_win):
         pygame.display.update()
         time.sleep(wait_time)
 
-        return True, black_win, white_win
+        count_draw += 1
 
-    return False, black_win, white_win
+        return True, black_win, white_win, count_draw
+
+    return False, black_win, white_win, count_draw
 
 if __name__ == '__main__':
 	main()
