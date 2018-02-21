@@ -241,7 +241,7 @@ def check_win(gameboard, num_stones):
 
     # Check four stones in a row (Horizontal)
     for row in range(GAMEBOARD_SIZE):
-        for col in range(GAMEBOARD_SIZE - WIN_STONES):
+        for col in range(GAMEBOARD_SIZE - WIN_STONES + 1):
             # Black win!
             if np.sum(gameboard[row, col:col + WIN_STONES]) == WIN_STONES:
                 return 1
@@ -250,7 +250,7 @@ def check_win(gameboard, num_stones):
                 return 2
 
     # Check four stones in a colum (Vertical)
-    for row in range(GAMEBOARD_SIZE - WIN_STONES):
+    for row in range(GAMEBOARD_SIZE - WIN_STONES + 1):
         for col in range(GAMEBOARD_SIZE):
             # Black win!
             if np.sum(gameboard[row : row + WIN_STONES, col]) == WIN_STONES:
