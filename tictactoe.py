@@ -14,7 +14,7 @@ import copy
 
 # Window Information
 FPS = 30
-WINDOW_WIDTH = 320
+WINDOW_WIDTH = 340
 WINDOW_HEIGHT = 480
 TOP_MARGIN = 160
 MARGIN = 20
@@ -72,8 +72,8 @@ def main():
     Y_coord = []
 
     for i in range(GAMEBOARD_SIZE):
-        X_coord.append(MARGIN + i * int(GRID_SIZE/(GAMEBOARD_SIZE-1)))
-        Y_coord.append(TOP_MARGIN + i * int(GRID_SIZE/(GAMEBOARD_SIZE-1)))
+        X_coord.append(MARGIN + i * int(GRID_SIZE/(GAMEBOARD_SIZE)) + int(GRID_SIZE/(GAMEBOARD_SIZE * 2)))
+        Y_coord.append(TOP_MARGIN + i * int(GRID_SIZE/(GAMEBOARD_SIZE)) + int(GRID_SIZE/(GAMEBOARD_SIZE * 2)))
 
     while True: # Game loop
         # Initial settings
@@ -159,24 +159,25 @@ def draw_main_board(gameboard, X_coord, Y_coord):
     # pygame.draw.rect(DISPLAYSURF, BADUK, mainboard_rect)
 
     # Horizontal Lines
-    for i in range(GAMEBOARD_SIZE):
-        pygame.draw.line(DISPLAYSURF, WHITE, (MARGIN, TOP_MARGIN + i * int(GRID_SIZE/(GAMEBOARD_SIZE-1))), (WINDOW_WIDTH - (MARGIN), TOP_MARGIN + i * int(GRID_SIZE/(GAMEBOARD_SIZE-1))), 1)
+    for i in range(GAMEBOARD_SIZE+1):
+        pygame.draw.line(DISPLAYSURF, WHITE, (MARGIN, TOP_MARGIN + i * int(GRID_SIZE/(GAMEBOARD_SIZE))), (WINDOW_WIDTH - (MARGIN), TOP_MARGIN + i * int(GRID_SIZE/(GAMEBOARD_SIZE))), 1)
 
     # Vertical Lines
-    for i in range(GAMEBOARD_SIZE):
-        pygame.draw.line(DISPLAYSURF, WHITE, (MARGIN + i * int(GRID_SIZE/(GAMEBOARD_SIZE-1)), TOP_MARGIN), (MARGIN + i * int(GRID_SIZE/(GAMEBOARD_SIZE-1)), TOP_MARGIN + GRID_SIZE), 1)
+    for i in range(GAMEBOARD_SIZE+1):
+        pygame.draw.line(DISPLAYSURF, WHITE, (MARGIN + i * int(GRID_SIZE/(GAMEBOARD_SIZE)), TOP_MARGIN), (MARGIN + i * int(GRID_SIZE/(GAMEBOARD_SIZE)), TOP_MARGIN + GRID_SIZE), 1)
 
     # Draw center circle
-    pygame.draw.circle(DISPLAYSURF, WHITE, (MARGIN + 4 * int(GRID_SIZE/(GAMEBOARD_SIZE-1)), TOP_MARGIN + 4 * int(GRID_SIZE/(GAMEBOARD_SIZE-1))), 5, 0)
+    pygame.draw.circle(DISPLAYSURF, WHITE, (MARGIN + 4 * int(GRID_SIZE/(GAMEBOARD_SIZE)), TOP_MARGIN + 4 * int(GRID_SIZE/(GAMEBOARD_SIZE))), 5, 0)
 
     # Draw marks
     for i in range(gameboard.shape[0]):
         for j in range(gameboard.shape[1]):
             if gameboard[i,j] == 1:
-                pygame.draw.circle(DISPLAYSURF, WHITE, (X_coord[j], Y_coord[i]), 15, 0)
+                pygame.draw.circle(DISPLAYSURF, WHITE, (X_coord[j], Y_coord[i]), 30, 0)
 
             if gameboard[i,j] == -1:
-                pygame.draw.circle(DISPLAYSURF, WHITE, (X_coord[j], Y_coord[i]), 15, 0)
+                pygame.draw.line(DISPLAYSURF, WHITE, (X_coord[j] - 30, Y_coord[i] - 30), (X_coord[j] + 30, Y_coord[i] + 30), 10)
+                pygame.draw.line(DISPLAYSURF, WHITE, (X_coord[j] - 30, Y_coord[i] + 30), (X_coord[j] + 30, Y_coord[i] - 30), 10)
 
 # Display title
 def title_msg():
@@ -229,7 +230,7 @@ def turn_msg(turn):
     else:
         turnSurf = BASIC_FONT.render("X's Turn!", True, WHITE)
         turnRect = turnSurf.get_rect()
-        turnRect.topleft = (WINDOW_WIDTH - 125, 135)
+        turnRect.topleft = (WINDOW_WIDTH - 75, 135)
         DISPLAYSURF.blit(turnSurf, turnRect)
 
 # Check win
