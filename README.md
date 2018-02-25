@@ -9,6 +9,7 @@ The games that I implemented is as follows.
 - pong
 - omok
 - mini-omok
+- tictactoe
 - dodge
 
 ---
@@ -82,6 +83,24 @@ Mini Omok is mini version of omok (9 x 9).
 The **goal** of this game is to make stone 5 in a row (Horizontal or vertical or diagonal)!
 
 You can use your mouse to put stones on the board.
+
+---
+
+
+
+------
+
+### TicTacToe
+
+<img src="./Images/tictactoe.PNG" width="400px" />
+
+
+
+TicTacToe is simple board game which has size 3x3. 
+
+The **goal** of this game is to make O or X mark 3 in a row (Horizontal or vertical or diagonal)!
+
+You can use your mouse to draw marks on the board.
 
 ---
 
